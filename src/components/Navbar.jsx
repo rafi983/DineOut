@@ -4,12 +4,12 @@ import userIcon from "../assets/user-icon.svg";
 
 const Navbar = () => {
   return (
-    <nav className="bg-[rgba(89,86,86,0.29)] rounded-full mt-4 px-8 py-3 flex justify-between items-center font-[Inter]">
+    <nav className="bg-[rgba(89,86,86,0.29)] rounded-full mt-4 px-8 py-3 flex justify-between items-center">
       <div className="flex items-center">
-        <div className="mr-2">
+        <div className="text-primary mr-2">
           <img src={logo} alt="DineOut Logo" />
         </div>
-        <h1 className="text-2xl font-bold text-white">
+        <h1 className="text-2xl font-bold">
           <span className="text-[#FF602C]">Dine</span>Out
         </h1>
       </div>
