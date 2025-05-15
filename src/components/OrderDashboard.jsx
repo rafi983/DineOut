@@ -91,12 +91,11 @@ const OrderDashboard = ({ orders, onDelete, onDeliver }) => {
               <path d="M10 20a1 1 0 0 0 .553.895l2 1A1 1 0 0 0 14 21v-7a2 2 0 0 1 .517-1.341L21.74 4.67A1 1 0 0 0 21 3H3a1 1 0 0 0-.742 1.67l7.225 7.989A2 2 0 0 1 10 14z" />
             </svg>
 
-            {/* DARK WRAPPER Starts here */}
-            <div className="flex items-center bg-[#1D1D1D] rounded-sm px-2 py-[6px] relative min-w-[110px]">
+            <div className="flex items-center bg-zinc-900 rounded-sm px-2 py-[6px] relative min-w-[110px]">
               <select
                 value={filter}
                 onChange={(e) => setFilter(e.target.value)}
-                className="appearance-none bg-transparent text-white text-sm font-normal pr-8 pl-2 py-0 border-none outline-none w-full"
+                className="appearance-none bg-zinc-900 accent-orange-600 border-none outline-none rounded-sm"
                 style={{
                   fontFamily: "Inter, sans-serif",
                   WebkitAppearance: "none",
