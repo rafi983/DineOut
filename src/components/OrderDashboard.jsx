@@ -14,11 +14,11 @@ const OrderDashboard = ({ orders, onDelete, onDeliver }) => {
   const deliveredOrders = orders.filter((o) => o.status === "DELIVERED").length;
 
   return (
-    <div className="md:col-span-2 h-[calc(100vh-130px)] font-inter">
+    <div className="col-span-1 md:col-span-2 font-inter">
       {/* Order Summary */}
       <div>
         <h2 className="text-xl font-bold mb-4">Order Summary</h2>
-        <div className="grid grid-cols-3 gap-4 mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-6">
           <SummaryCard
             count={totalOrders}
             label="Total Order"
