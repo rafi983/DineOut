@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import SummaryCard from "./SummaryCard";
 
 const OrderDashboard = ({ orders, onDelete, onDeliver }) => {
   const [filter, setFilter] = useState("All");
@@ -18,64 +19,32 @@ const OrderDashboard = ({ orders, onDelete, onDeliver }) => {
       <div>
         <h2 className="text-xl font-bold mb-4">Order Summary</h2>
         <div className="grid grid-cols-3 gap-4 mb-6">
-          {/* Total Orders */}
-          <div
-            className="rounded-lg p-4"
-            style={{ backgroundColor: "rgba(89, 86, 86, 0.4)" }}
-          >
-            <div className="text-5xl font-bold text-yellow-500 mb-2">
-              {totalOrders}
-            </div>
-            <div
-              className="text-yellow-200 text-xs px-3 py-1 rounded-full inline-block"
-              style={{ backgroundColor: "rgba(202, 138, 4, 0.3)" }} // yellow-600 @ 30%
-            >
-              Total Order
-            </div>
-          </div>
-
-          {/* Pending Orders */}
-          <div
-            className="rounded-lg p-4"
-            style={{ backgroundColor: "rgba(89, 86, 86, 0.4)" }}
-          >
-            <div className="text-5xl font-bold text-red-500 mb-2">
-              {pendingOrders}
-            </div>
-            <div
-              className="text-red-200 text-xs px-3 py-1 rounded-full inline-block"
-              style={{ backgroundColor: "rgba(220, 38, 38, 0.3)" }} // red-600 @ 30%
-            >
-              Pending
-            </div>
-          </div>
-
-          {/* Delivered Orders */}
-          <div
-            className="rounded-lg p-4"
-            style={{ backgroundColor: "rgba(89, 86, 86, 0.4)" }}
-          >
-            <div className="text-5xl font-bold text-green-500 mb-2">
-              {deliveredOrders}
-            </div>
-            <div
-              className="text-green-200 text-xs px-3 py-1 rounded-full inline-block"
-              style={{ backgroundColor: "rgba(22, 163, 74, 0.3)" }} // green-600 @ 30%
-            >
-              Delivered
-            </div>
-          </div>
+          <SummaryCard
+            count={totalOrders}
+            label="Total Order"
+            textColor="text-yellow-500"
+            bgColor="rgba(202, 138, 4, 0.3)"
+          />
+          <SummaryCard
+            count={pendingOrders}
+            label="Pending"
+            textColor="text-red-500"
+            bgColor="rgba(220, 38, 38, 0.3)"
+          />
+          <SummaryCard
+            count={deliveredOrders}
+            label="Delivered"
+            textColor="text-green-500"
+            bgColor="rgba(22, 163, 74, 0.3)"
+          />
         </div>
       </div>
 
       {/* Order Reports */}
       <div>
-        {/* Order Reports Header */}
         <div className="flex justify-between items-center">
           <h2 className="text-xl font-bold mb-4">Order Reports</h2>
-
           <div className="flex gap-4 items-center">
-            {/* Funnel Icon */}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="18"
@@ -95,7 +64,7 @@ const OrderDashboard = ({ orders, onDelete, onDeliver }) => {
               <select
                 value={filter}
                 onChange={(e) => setFilter(e.target.value)}
-                className="appearance-none bg-zinc-900 accent-orange-600 border-none outline-none rounded-sm"
+                className="appearance-none bg-zinc-900 accent-orange-600 border-none outline-none rounded-sm px-2 py-1 pr-8 w-full text-white text-sm"
                 style={{
                   fontFamily: "Inter, sans-serif",
                   WebkitAppearance: "none",
@@ -106,8 +75,6 @@ const OrderDashboard = ({ orders, onDelete, onDeliver }) => {
                 <option>Pending</option>
                 <option>Delivered</option>
               </select>
-
-              {/* Dropdown Icon */}
               <svg
                 className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
                 xmlns="http://www.w3.org/2000/svg"
