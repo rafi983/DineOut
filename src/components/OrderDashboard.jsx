@@ -13,32 +13,55 @@ const OrderDashboard = ({ orders, onDelete, onDeliver }) => {
   const deliveredOrders = orders.filter((o) => o.status === "DELIVERED").length;
 
   return (
-    <div className="md:col-span-2 h-[calc(100vh-130px)]">
+    <div className="md:col-span-2 h-[calc(100vh-130px)] font-inter">
       {/* Order Summary */}
       <div>
         <h2 className="text-xl font-bold mb-4">Order Summary</h2>
         <div className="grid grid-cols-3 gap-4 mb-6">
-          <div className="bg-[rgba(89,86,86,0.4)] rounded-lg p-4">
+          {/* Total Orders */}
+          <div
+            className="rounded-lg p-4"
+            style={{ backgroundColor: "rgba(89, 86, 86, 0.4)" }}
+          >
             <div className="text-5xl font-bold text-yellow-500 mb-2">
               {totalOrders}
             </div>
-            <div className="bg-yellow-800 bg-opacity-50 text-yellow-200 text-xs px-3 py-1 rounded-full inline-block">
+            <div
+              className="text-yellow-200 text-xs px-3 py-1 rounded-full inline-block"
+              style={{ backgroundColor: "rgba(202, 138, 4, 0.3)" }} // yellow-600 @ 30%
+            >
               Total Order
             </div>
           </div>
-          <div className="bg-[rgba(89,86,86,0.4)] rounded-lg p-4">
+
+          {/* Pending Orders */}
+          <div
+            className="rounded-lg p-4"
+            style={{ backgroundColor: "rgba(89, 86, 86, 0.4)" }}
+          >
             <div className="text-5xl font-bold text-red-500 mb-2">
               {pendingOrders}
             </div>
-            <div className="bg-red-800 bg-opacity-50 text-red-200 text-xs px-3 py-1 rounded-full inline-block">
+            <div
+              className="text-red-200 text-xs px-3 py-1 rounded-full inline-block"
+              style={{ backgroundColor: "rgba(220, 38, 38, 0.3)" }} // red-600 @ 30%
+            >
               Pending
             </div>
           </div>
-          <div className="bg-[rgba(89,86,86,0.4)] rounded-lg p-4">
+
+          {/* Delivered Orders */}
+          <div
+            className="rounded-lg p-4"
+            style={{ backgroundColor: "rgba(89, 86, 86, 0.4)" }}
+          >
             <div className="text-5xl font-bold text-green-500 mb-2">
               {deliveredOrders}
             </div>
-            <div className="bg-green-800 bg-opacity-50 text-green-200 text-xs px-3 py-1 rounded-full inline-block">
+            <div
+              className="text-green-200 text-xs px-3 py-1 rounded-full inline-block"
+              style={{ backgroundColor: "rgba(22, 163, 74, 0.3)" }} // green-600 @ 30%
+            >
               Delivered
             </div>
           </div>
@@ -47,9 +70,12 @@ const OrderDashboard = ({ orders, onDelete, onDeliver }) => {
 
       {/* Order Reports */}
       <div>
-        <div className="flex justify-between">
+        {/* Order Reports Header */}
+        <div className="flex justify-between items-center">
           <h2 className="text-xl font-bold mb-4">Order Reports</h2>
+
           <div className="flex gap-4 items-center">
+            {/* Funnel Icon */}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="18"
@@ -60,35 +86,48 @@ const OrderDashboard = ({ orders, onDelete, onDeliver }) => {
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
-              className="lucide lucide-funnel"
+              className="lucide lucide-funnel-icon text-white"
             >
               <path d="M10 20a1 1 0 0 0 .553.895l2 1A1 1 0 0 0 14 21v-7a2 2 0 0 1 .517-1.341L21.74 4.67A1 1 0 0 0 21 3H3a1 1 0 0 0-.742 1.67l7.225 7.989A2 2 0 0 1 10 14z" />
             </svg>
-            <div className="relative">
+
+            {/* DARK WRAPPER Starts here */}
+            <div className="flex items-center bg-[#1D1D1D] rounded-sm px-2 py-[6px] relative min-w-[110px]">
               <select
-                className="appearance-none bg-zinc-900 text-white border-none outline-none rounded-sm px-2 py-1 pr-6"
                 value={filter}
                 onChange={(e) => setFilter(e.target.value)}
+                className="appearance-none bg-transparent text-white text-sm font-normal pr-8 pl-2 py-0 border-none outline-none w-full"
+                style={{
+                  fontFamily: "Inter, sans-serif",
+                  WebkitAppearance: "none",
+                  MozAppearance: "none",
+                }}
               >
                 <option>All</option>
                 <option>Pending</option>
                 <option>Delivered</option>
               </select>
+
+              {/* Dropdown Icon */}
               <svg
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 pointer-events-none text-gray-400"
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
                 xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                fill="currentColor"
+                width="20"
+                height="20"
                 viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               >
-                <path d="M7 10l5 5 5-5z" />
+                <path d="M6 9l6 6 6-6" />
               </svg>
             </div>
           </div>
         </div>
 
-        <div className="bg-[rgba(89,86,86,0.4)] rounded-lg p-4">
+        <div className="bg-cardbg rounded-lg p-4">
           <div className="reports-container max-h-[340px] overflow-y-auto">
             <table className="min-w-full text-sm">
               <thead>
