@@ -24,16 +24,36 @@ const initialItems = [
   { id: 4, name: "Pizza slices", price: 300, image: pizza, selected: false },
 ];
 
+// 🔁 Load form state from localStorage or fallback to empty state
+const getStoredForm = () => {
+  const stored = localStorage.getItem("form");
+  return stored
+    ? JSON.parse(stored)
+    : {
+        customerName: "",
+        items: initialItems,
+      };
+};
+
 const CreateOrder = ({ onPlaceOrder }) => {
-  const [customerName, setCustomerName] = useState("");
-  const [items, setItems] = useState(initialItems);
+  const [form, setForm] = useState(getStoredForm);
+  const [error, setError] = useState("");
+
+  const { customerName, items } = form;
+
+  const handleNameChange = (e) => {
+    const updated = { ...form, customerName: e.target.value };
+    setForm(updated);
+    localStorage.setItem("form", JSON.stringify(updated));
+  };
 
   const toggleItem = (id) => {
-    setItems((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, selected: !item.selected } : item,
-      ),
+    const updatedItems = items.map((item) =>
+      item.id === id ? { ...item, selected: !item.selected } : item,
     );
+    const updated = { ...form, items: updatedItems };
+    setForm(updated);
+    localStorage.setItem("form", JSON.stringify(updated));
   };
 
   const totalPrice = items
@@ -41,7 +61,17 @@ const CreateOrder = ({ onPlaceOrder }) => {
     .reduce((sum, item) => sum + item.price, 0);
 
   const handlePlaceOrder = () => {
-    if (!customerName.trim() || totalPrice === 0) return;
+    if (!customerName.trim()) {
+      setError("Customer name is required.");
+      return;
+    }
+
+    if (totalPrice === 0) {
+      setError("Please select at least one item.");
+      return;
+    }
+
+    setError(""); // clear previous error
 
     const selectedItems = items.filter((item) => item.selected);
 
@@ -53,8 +83,10 @@ const CreateOrder = ({ onPlaceOrder }) => {
       status: "PENDING",
     });
 
-    setCustomerName("");
-    setItems(initialItems);
+    // Reset form and clear localStorage
+    const resetForm = { customerName: "", items: initialItems };
+    setForm(resetForm);
+    localStorage.removeItem("form");
   };
 
   return (
@@ -65,6 +97,7 @@ const CreateOrder = ({ onPlaceOrder }) => {
         their requirements.
       </p>
 
+      {/* Customer Name */}
       <div className="mb-4">
         <label className="block text-sm mb-2 font-medium">Customer Name</label>
         <input
@@ -72,7 +105,7 @@ const CreateOrder = ({ onPlaceOrder }) => {
           className="w-full rounded-md p-2 font-inter text-white transition-all duration-300 focus:outline-none"
           style={{
             backgroundColor: "rgba(55, 65, 81, 0.5)",
-            border: "1px solid rgba(255, 255, 255, 0.3)", // ✅ subtle white border
+            border: "1px solid rgba(255, 255, 255, 0.3)",
             outline: "none",
           }}
           onFocus={(e) => {
@@ -84,10 +117,12 @@ const CreateOrder = ({ onPlaceOrder }) => {
             e.target.style.boxShadow = "none";
           }}
           value={customerName}
-          onChange={(e) => setCustomerName(e.target.value)}
+          onChange={handleNameChange}
         />
+        {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
       </div>
 
+      {/* Food Items */}
       <div className="mb-4">
         <label className="block text-sm mb-2 font-medium">Choose Items</label>
         <div className="items-container max-h-[250px] overflow-y-auto">
@@ -101,10 +136,15 @@ const CreateOrder = ({ onPlaceOrder }) => {
         </div>
       </div>
 
+      {/* Place Order Button */}
       <button
         onClick={handlePlaceOrder}
-        disabled={!customerName.trim() || totalPrice === 0}
-        className="w-full bg-primary hover:bg-opacity-90 text-white font-medium py-3 rounded-full transition-all duration-300 hover:shadow-lg transform hover:-translate-y-1 disabled:opacity-40"
+        disabled={customerName.trim() === "" || totalPrice === 0}
+        className={`w-full bg-primary text-white font-medium py-3 rounded-full transition-all duration-300 transform ${
+          customerName.trim() === "" || totalPrice === 0
+            ? "opacity-40 cursor-not-allowed"
+            : "hover:bg-opacity-90 hover:shadow-lg hover:-translate-y-1"
+        }`}
       >
         Place Order (BDT {totalPrice})
       </button>
