@@ -1,8 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import hamburger from "../assets/hamburger.svg";
 import chicken from "../assets/chicken.svg";
 import submarine from "../assets/submarine.svg";
 import pizza from "../assets/pizza.svg";
+import taco from "../assets/taco.svg";
+import sushi from "../assets/sushi.svg";
+import pasta from "../assets/pasta.svg";
+import frenchFries from "../assets/french-fries.svg";
+import icecream from "../assets/icecream.svg";
 import MenuItem from "./MenuItem";
 
 const initialItems = [
@@ -10,40 +15,54 @@ const initialItems = [
   {
     id: 2,
     name: "Chicken Nuggets",
-    price: 300,
+    price: 430,
     image: chicken,
     selected: false,
   },
   {
     id: 3,
     name: "Submarine Sandwich",
-    price: 300,
+    price: 380,
     image: submarine,
     selected: false,
   },
-  { id: 4, name: "Pizza slices", price: 300, image: pizza, selected: false },
+  { id: 4, name: "Pizza slices", price: 750, image: pizza, selected: false },
+  { id: 5, name: "Taco", price: 800, image: taco, selected: false },
+  { id: 6, name: "Sushi", price: 450, image: sushi, selected: false },
+  { id: 7, name: "Pasta", price: 1100, image: pasta, selected: false },
+  {
+    id: 8,
+    name: "French fries",
+    price: 500,
+    image: frenchFries,
+    selected: false,
+  },
+  { id: 9, name: "Ice Cream", price: 600, image: icecream, selected: false },
 ];
 
-const getStoredForm = () => {
-  const stored = localStorage.getItem("form");
-  return stored
-    ? JSON.parse(stored)
-    : {
-        customerName: "",
-        items: initialItems,
-      };
-};
-
 const CreateOrder = ({ onPlaceOrder }) => {
-  const [form, setForm] = useState(getStoredForm);
+  const [form, setForm] = useState(() => {
+    const stored = localStorage.getItem("form");
+    return stored
+      ? JSON.parse(stored)
+      : { customerName: "", items: initialItems };
+  });
+
   const [error, setError] = useState("");
 
   const { customerName, items } = form;
 
+  const totalPrice = items
+    .filter((item) => item.selected)
+    .reduce((sum, item) => sum + item.price, 0);
+
+  const isNameTyped = customerName.trim() !== "";
+  const isItemSelected = totalPrice > 0;
+  const isButtonEnabled = isNameTyped || isItemSelected;
+
   const handleNameChange = (e) => {
     const updated = { ...form, customerName: e.target.value };
     setForm(updated);
-    localStorage.setItem("form", JSON.stringify(updated));
   };
 
   const toggleItem = (id) => {
@@ -52,24 +71,17 @@ const CreateOrder = ({ onPlaceOrder }) => {
     );
     const updated = { ...form, items: updatedItems };
     setForm(updated);
-    localStorage.setItem("form", JSON.stringify(updated));
   };
 
-  const totalPrice = items
-    .filter((item) => item.selected)
-    .reduce((sum, item) => sum + item.price, 0);
-
   const handlePlaceOrder = () => {
-    if (!customerName.trim()) {
+    if (!isNameTyped) {
       setError("Customer name is required.");
       return;
     }
-    if (totalPrice === 0) {
+    if (!isItemSelected) {
       setError("Please select at least one item.");
       return;
     }
-
-    setError("");
 
     const selectedItems = items.filter((item) => item.selected);
 
@@ -83,13 +95,14 @@ const CreateOrder = ({ onPlaceOrder }) => {
 
     const resetForm = { customerName: "", items: initialItems };
     setForm(resetForm);
+    setError("");
     localStorage.removeItem("form");
   };
 
-  const isNameTyped = customerName.trim() !== "";
-  const isItemSelected = totalPrice > 0;
-
-  const isButtonEnabled = isNameTyped || isItemSelected;
+  // Sync form state to localStorage
+  useEffect(() => {
+    localStorage.setItem("form", JSON.stringify(form));
+  }, [form]);
 
   return (
     <div className="bg-cardbg rounded-lg p-6 h-[calc(100vh-130px)] font-inter">
@@ -99,11 +112,12 @@ const CreateOrder = ({ onPlaceOrder }) => {
         their requirements.
       </p>
 
-      {/* Customer Name */}
       <div className="mb-4">
         <label className="block text-sm mb-2 font-medium">Customer Name</label>
         <input
           type="text"
+          value={customerName}
+          onChange={handleNameChange}
           className="w-full rounded-md p-2 font-inter text-white transition-all duration-300 focus:outline-none"
           style={{
             backgroundColor: "rgba(55, 65, 81, 0.5)",
@@ -118,13 +132,10 @@ const CreateOrder = ({ onPlaceOrder }) => {
             e.target.style.border = "1px solid rgba(255, 255, 255, 0.2)";
             e.target.style.boxShadow = "none";
           }}
-          value={customerName}
-          onChange={handleNameChange}
         />
         {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
       </div>
 
-      {/* Food Items */}
       <div className="mb-4">
         <label className="block text-sm mb-2 font-medium">Choose Items</label>
         <div className="items-container max-h-[250px] overflow-y-auto">
@@ -138,7 +149,6 @@ const CreateOrder = ({ onPlaceOrder }) => {
         </div>
       </div>
 
-      {/* Place Order Button */}
       <button
         onClick={handlePlaceOrder}
         disabled={!isButtonEnabled}
