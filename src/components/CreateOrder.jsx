@@ -24,7 +24,6 @@ const initialItems = [
   { id: 4, name: "Pizza slices", price: 300, image: pizza, selected: false },
 ];
 
-// 🔁 Load form state from localStorage or fallback to empty state
 const getStoredForm = () => {
   const stored = localStorage.getItem("form");
   return stored
@@ -65,13 +64,12 @@ const CreateOrder = ({ onPlaceOrder }) => {
       setError("Customer name is required.");
       return;
     }
-
     if (totalPrice === 0) {
       setError("Please select at least one item.");
       return;
     }
 
-    setError(""); // clear previous error
+    setError("");
 
     const selectedItems = items.filter((item) => item.selected);
 
@@ -83,11 +81,15 @@ const CreateOrder = ({ onPlaceOrder }) => {
       status: "PENDING",
     });
 
-    // Reset form and clear localStorage
     const resetForm = { customerName: "", items: initialItems };
     setForm(resetForm);
     localStorage.removeItem("form");
   };
+
+  const isNameTyped = customerName.trim() !== "";
+  const isItemSelected = totalPrice > 0;
+
+  const isButtonEnabled = isNameTyped || isItemSelected;
 
   return (
     <div className="bg-cardbg rounded-lg p-6 h-[calc(100vh-130px)] font-inter">
@@ -139,11 +141,11 @@ const CreateOrder = ({ onPlaceOrder }) => {
       {/* Place Order Button */}
       <button
         onClick={handlePlaceOrder}
-        disabled={customerName.trim() === "" || totalPrice === 0}
+        disabled={!isButtonEnabled}
         className={`w-full bg-primary text-white font-medium py-3 rounded-full transition-all duration-300 transform ${
-          customerName.trim() === "" || totalPrice === 0
-            ? "opacity-40 cursor-not-allowed"
-            : "hover:bg-opacity-90 hover:shadow-lg hover:-translate-y-1"
+          isButtonEnabled
+            ? "hover:bg-opacity-90 hover:shadow-lg hover:-translate-y-1"
+            : "opacity-60 cursor-not-allowed"
         }`}
       >
         Place Order (BDT {totalPrice})
